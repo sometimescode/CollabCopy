@@ -12,5 +12,5 @@ Improvement notes from presentation:
 3) Add automation for book serial in case librarian buys 500 books and doesn't want to manually input 500 book copies.
 -
 Other improvements:
-- No security currently. Anyone can access admin panel.
+- No security currently. Anyone can access admin panel. SessionAware already exists but also not being used.
 - No ability to upload own book cover. Currently pulling it from openlibrary. And if there is nothing pulled, there will be no image.
