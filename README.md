@@ -1,9 +1,16 @@
 # CollabCopy
 Homepage: http://localhost:8080/app/index
-Access config browser: http://localhost:8080/app/config-browser/index
-Using JAVA 11 for MAVEN compiler: Amazon Corretto jdk11.0.14_10 because 17 produces error [will have to check]
+Access config browser (to see action mapping): http://localhost:8080/app/config-browser/index
 
-Need to test:
-1) Change scroll back buffer to 10000 for debugging (try mvn jetty:run without making this change and you will not be able to see when you made the command in the terminal when you scroll back to the current limit) 
+Change Settings:
+1) Change scroll back buffer value for debugging
 https://stackoverflow.com/questions/39881395/visual-studio-code-scroll-back-buffer
-2)
+
+Improvement notes from presentation:
+1) Fines for Late returns (?)
+2) Add Location input for books
+3) Add automation for book serial in case librarian buys 500 books and doesn't want to manually input 500 book copies.
+-
+Other improvements:
+- No security currently. Anyone can access admin panel.
+- No ability to upload own book cover. Currently pulling it from openlibrary. And if there is nothing pulled, there will be no image.
