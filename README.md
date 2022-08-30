@@ -9,7 +9,7 @@ https://stackoverflow.com/questions/39881395/visual-studio-code-scroll-back-buff
 Improvement notes from presentation:
 1) Fines for Late returns (?)
 2) Add Location input for books
-3) Add automation for book copy serial id in case librarian buys 500 books and doesn't want to manually input 500 book copies.
+3) Add automation for book copy serial id in case librarian buys 500 books and doesn't want to manually input 500 book copies. [use ISBN + count existing book copies] as serial-id and add new input form for Number of Copies to Add
 
 Other improvements:
 - No security currently. Anyone can access admin panel. SessionAware already exists but also not being used.
