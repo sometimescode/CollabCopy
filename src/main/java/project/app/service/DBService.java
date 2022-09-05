@@ -3,6 +3,7 @@ package project.app.service;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Blob;
@@ -1386,4 +1387,41 @@ public class DBService {
          }
     }
     /////////////////////////////////////////////////////////////////
+    //test zone
+    //imported File java io
+    public static int testAddBookEntryGetId(File file, String contentType, String filename) throws SQLException, ClassNotFoundException, IOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ByteArrayOutputStream baos = null;
+
+        int bookEntryId = -1;
+
+        try {
+            connection = connectToDB();
+
+            BufferedImage image = ImageIO.read(file);
+            baos = new ByteArrayOutputStream(64000);
+            ImageIO.write(image, contentType, baos);
+            byte[] data = baos.toByteArray();
+
+            String sql = "INSERT INTO cover_test(cover)\n" +
+                "VALUES(?)";
+
+            preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setBinaryStream(1, new ByteArrayInputStream(data), (int) data.length);
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()){
+                bookEntryId = rs.getInt(1);
+            }
+
+            return bookEntryId; 
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+            if (baos != null) try { baos.close(); } catch (IOException ignore) {}
+         }
+    }
+    //test zone
 }
