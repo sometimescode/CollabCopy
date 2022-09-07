@@ -75,7 +75,7 @@
                     New Cover Preview
                   </div>
                   <div class="card-body">
-                    <img id="blah" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                    <img id="coverImgPreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
                   </div>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                     New Cover Preview
                   </div>
                   <div class="card-body">
-                    <img id="blah" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                    <img id="coverImgPreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
                   </div>
                 </div>
               </div>
@@ -239,11 +239,11 @@
           if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-              $('#blah').attr('src', e.target.result);
+              $('#coverImgPreview').attr('src', e.target.result);
             }
             reader.readAsDataURL(input.files[0]);
           } else {
-            $('#blah').attr('src', '');
+            $('#coverImgPreview').attr('src', '');
           }
         }
 

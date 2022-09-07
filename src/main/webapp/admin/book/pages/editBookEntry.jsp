@@ -95,6 +95,29 @@
                       <label for="floatingGenre">Genre</label>
                       <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookEntryBean.genre" />
                     </div>
+
+                    <s:property value="newCoverUpload"/>
+                    <div class="form-check form-switch mb-3">
+                        <s:checkbox cssClass="form-check-input" id="newCoverUploadCheckbox" name="newCoverUpload"/>
+                        <label class="form-check-label" for="newCoverUploadCheckbox">Upload New Cover Image</label>              
+                    </div>
+                    <div id="newCoverUploadDiv" class="mb-3" style="display: none;">
+                      <div id="newCoverPreview">
+                        <div class="card text-center">
+                          <div class="card-header">
+                            New Cover Preview
+                          </div>
+                          <div class="card-body">
+                            <img id="coverImagePreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                          </div>
+                        </div>
+                      </div>
+                      <label for="newCoverFileUpload">Update Cover Image: </label>
+                      <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                      <div class="card-footer text-muted">
+                        You will not be able to revert to the previous image after replacing it.
+                      </div>
+                    </div>
                     <s:submit cssClass="btn btn-primary w-100" value="Edit"/>
                   </s:form>
               </div>
@@ -109,5 +132,35 @@
     
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        console.log("loaded");
+        $("#newCoverUploadCheckbox").click(function() {
+          console.log("clicked");
+          if($(this).is(":checked")) {
+              $("#newCoverUploadDiv").show(300);
+          } else {
+              $("#newCoverUploadDiv").hide(200);
+          }
+        });
+
+        function readURL(input) {
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              $('#coverImagePreview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+          } else {
+            $('#coverImagePreview').attr('src', '');
+          }
+        }
+
+        $("#newCoverFileUpload").change(function() {
+          readURL(this);
+        });
+
+      });
+    </script>
   </body>
 </html>

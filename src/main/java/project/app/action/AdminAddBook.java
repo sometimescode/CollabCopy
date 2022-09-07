@@ -126,7 +126,7 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
     public String addBookEntry() {
         try {
             System.out.println("VALUS newCoveruplolad" + newCoverUpload);
-            int bookEntryId = DBService.addBookEntryGetId(bookEntryBean, newCoverUpload, file, contentType);
+            int bookEntryId = DBService.addBookEntryGetId(bookEntryBean, newCoverUpload, file);
 
             if(bookEntryId != -1) {
                 userSession.put("bookEntryId", bookEntryId);
