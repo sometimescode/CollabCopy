@@ -19,6 +19,10 @@
   </head>
   <body>
     <div class="container">
+      <img id="blah" alt="your image" />
+
+<input type="file" 
+    onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])">
       <s:form action="doUpload" method="post" enctype="multipart/form-data">
         <s:file name="upload" label="File"/>
         <s:submit/>

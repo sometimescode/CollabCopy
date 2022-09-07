@@ -293,7 +293,6 @@
             <result name="error">pages/error.jsp</result>
         </action>
         <action name="doUpload" class="project.app.action.TestSpaceImg">
-            <param name="fileSystemPath">images/</param>
             <result name="success">pages/imgUploadSuccess.jsp</result>
             <result name="error">pages/error.jsp</result>
         </action>

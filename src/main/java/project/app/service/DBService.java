@@ -243,7 +243,7 @@ public class DBService {
          }
     }
 
-    public static int addBookEntryGetId(BookEntry bookEntry) throws SQLException, ClassNotFoundException, IOException {
+    public static int addBookEntryGetId(BookEntry bookEntry, boolean newCoverUpload, File file, String contentType) throws SQLException, ClassNotFoundException, IOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ByteArrayOutputStream baos = null;
@@ -253,10 +253,20 @@ public class DBService {
         try {
             connection = connectToDB();
 
-            URL url = new URL(bookEntry.getCover());
-            BufferedImage image = ImageIO.read(url);
-            baos = new ByteArrayOutputStream(64000);
-            ImageIO.write(image, "jpg", baos);
+            System.out.println("\n\n\n\n\n\n\n NEW COVER UPLOAD" + newCoverUpload
+            + "\n" + file.exists() + "\n" + contentType);
+
+            if(newCoverUpload) {
+                BufferedImage image = ImageIO.read(file);
+                baos = new ByteArrayOutputStream(64000);
+                ImageIO.write(image, contentType, baos);
+            } else {
+                URL url = new URL(bookEntry.getCover());
+                BufferedImage image = ImageIO.read(url);
+                baos = new ByteArrayOutputStream(64000);
+                ImageIO.write(image, "jpg", baos);
+            }
+
             byte[] data = baos.toByteArray();
 
             String sql = "INSERT INTO book_entries(title, authors, cover, isbn, page_count, publisher, published_date, genre)\n" +

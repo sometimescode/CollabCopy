@@ -1,5 +1,6 @@
 package project.app.action;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -27,13 +28,28 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
     private BookEntry bookEntryBean;
     private BookEntry openLibraryBookEntryBean;
     private ISBNResponse ISBNResponseBean;
+    private boolean newCoverUpload;
+    private boolean toggleCoverUploadSwitch;
     private String error;
     private String validationString;
 
     private List<String> authorList = new ArrayList<String>();
     private List<String> genreList = Arrays.asList(new String[] {"Fiction", "Non-Fiction"});
 
+    private File file;
+    private String contentType;
+    private String filename;
+
+    private static final String COVEROL = "OpenLibrary";
+	private static final String COVERNEW = "Upload New Cover";
+    private List<String> coverOptionsList = Arrays.asList(new String[] {COVEROL, COVERNEW});
+
     public String execute() {
+        toggleCoverUploadSwitch = true;
+        newCoverUpload = true;
+
+        System.out.println("\n\n\n\n\n\n\n ahhhh toggle " + toggleCoverUploadSwitch + "\n newCover" + newCoverUpload);
+ 
         return SUCCESS;
     }
 
@@ -79,7 +95,12 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public String searchBookFromOpenLibrary() {
         try {
+            System.out.println("F\n\n\n\n\n\n\n\n\n\n\n\n\n\n IMBEING PRINTED \n\n\n\n\n\n\n\n");
             ISBNResponseBean = OpenLibraryAPIService.searchISBNAPI(queryISBN);
+            toggleCoverUploadSwitch = false;
+            if(ISBNResponseBean.getCover() != null) {
+                newCoverUpload = false;
+            }
             populateFieldSuggestions();
             return SUCCESS;
         } catch (IOException e) {
@@ -104,7 +125,8 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public String addBookEntry() {
         try {
-            int bookEntryId = DBService.addBookEntryGetId(bookEntryBean);
+            System.out.println("VALUS newCoveruplolad" + newCoverUpload);
+            int bookEntryId = DBService.addBookEntryGetId(bookEntryBean, newCoverUpload, file, contentType);
 
             if(bookEntryId != -1) {
                 userSession.put("bookEntryId", bookEntryId);
@@ -130,6 +152,14 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public void setQueryISBN(String queryISBN) {
         this.queryISBN = queryISBN;
+    }
+
+    public List<String> getCoverOptionsList() {
+        return coverOptionsList;
+    }
+
+    public void setCoverOptionsList(List<String> coverOptionsList) {
+        this.coverOptionsList = coverOptionsList;
     }
 
     public List<String> getAuthorList() {
@@ -186,6 +216,34 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public void setValidationString(String validationString) {
         this.validationString = validationString;
+    }
+
+    public boolean isNewCoverUpload() {
+        return newCoverUpload;
+    }
+
+    public void setNewCoverUpload(boolean newCoverUpload) {
+        this.newCoverUpload = newCoverUpload;
+    }
+
+    public boolean isToggleCoverUploadSwitch() {
+        return toggleCoverUploadSwitch;
+    }
+
+    public void setToggleCoverUploadSwitch(boolean toggleCoverUploadSwitch) {
+        this.toggleCoverUploadSwitch = toggleCoverUploadSwitch;
+    }
+
+    public void setUpload(File file) {
+        this.file = file;
+    }
+
+    public void setUploadContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setUploadFileName(String filename) {
+        this.filename = filename;
     }
 
     @Override
