@@ -57,8 +57,10 @@
                       <s:url action="userView" namespace="/admin/user" var="userTag" >
                         <s:param name="userId"><s:property value="requesterId"/></s:param>
                       </s:url>
-                      <s:url action="checkoutRequestForm" namespace="/admin/checkout" var="assessAjaxTag" >
+                      <s:url action="checkoutRequestForm" namespace="/admin/checkout" var="assessAjaxTag" escapeAmp="false">
                         <s:param name="checkoutRequestId"><s:property value="dbId"/></s:param>
+                        <s:param name="requesterId"><s:property value="requesterId"/></s:param>
+                        <s:param name="checkoutRequestBean.joinBookEntryTitle"><s:property value="joinBookEntryTitle"/>></s:param>
                       </s:url>
                       <tr>
                         <td><s:property value="dbId"/></td>

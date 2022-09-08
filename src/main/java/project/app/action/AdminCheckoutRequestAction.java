@@ -1,5 +1,6 @@
 package project.app.action;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import project.app.model.BookCopy;
 import project.app.model.OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount;
 import project.app.service.DBService;
+import project.app.service.EmailNotification;
 
 public class AdminCheckoutRequestAction extends ActionSupport implements SessionAware {
     private Map<String, Object> userSession;
@@ -19,6 +21,7 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
     private String error;
     private OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount checkoutRequestBean;
     private int checkoutRequestId;
+    private int requesterId;
     private List<String> bookCopySelectList;
 
     public String checkoutRequestForm() {
@@ -45,8 +48,10 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
         try {
             DBService.approveCheckoutRequest(checkoutRequestId, checkoutRequestBean.getRequestedCopyId());
             DBService.updateBookCopyStatusById(checkoutRequestBean.getRequestedCopyId(), "Pending Check Out");
+            EmailNotification.notifyUserApprovedCheckoutRequest(DBService.getUserById(requesterId).getEmail(), 
+                                                                checkoutRequestBean.getJoinBookEntryTitle());
             return SUCCESS;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             error = e.toString();
             e.printStackTrace();
             return ERROR;
@@ -70,6 +75,15 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
 
     public void setError(String error) {
         this.error = error;
+    }
+    
+
+    public int getRequesterId() {
+        return requesterId;
+    }
+
+    public void setRequesterId(int requesterId) {
+        this.requesterId = requesterId;
     }
 
     public int getCheckoutRequestId() {

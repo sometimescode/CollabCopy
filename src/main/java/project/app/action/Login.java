@@ -23,6 +23,7 @@ public class Login extends ActionSupport implements SessionAware {
         userSession.put("id", userSessionData.getId());
         userSession.put("firstName", userSessionData.getFirstName());
         userSession.put("role", userSessionData.getRole());
+        userSession.put("email", userSessionData.getEmail());
     }
 
     public String execute() {
