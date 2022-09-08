@@ -18,11 +18,14 @@
     <!-- Create Checkout Record for Checkout Request ID <span class="fw-bold"><s:property value="checkoutRequestId"/></span>
 
     <hr> -->
-    
+    <p>Requester id: <s:property value="requesterId" /></p>
+    <p>checkout request id: <s:property value="checkoutRequestId" /></p>
     <s:if test="bookCopySelectList.size() == 0">
       <s:form action="rejectCheckoutRequest">
         There are currently no more available copies.
         <s:textfield name="checkoutRequestId" hidden="true"/>
+        <s:textfield name="requesterId" hidden="true"/>
+        <s:textfield name="checkoutRequestBean.joinBookEntryTitle" hidden="true"/>
         <s:submit cssClass="btn btn-danger w-100" value="Reject"/>
       </s:form>
     </s:if>
@@ -34,6 +37,8 @@
           <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="checkoutRequestBean.requestedCopyId" />
         </div>
         <s:textfield name="checkoutRequestId" hidden="true"/>
+        <s:textfield name="requesterId" hidden="true"/>
+        <s:textfield name="checkoutRequestBean.joinBookEntryTitle" hidden="true"/>
         <s:submit cssClass="btn btn-primary w-100" value="Approve"/>
       </s:form>
     </s:else>

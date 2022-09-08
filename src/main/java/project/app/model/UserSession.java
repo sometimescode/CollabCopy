@@ -4,6 +4,7 @@ public class UserSession {
     private int id;
     private String firstName;
     private String role;
+    private String email;
 
     private int bookEntryId;
     private int checkoutRequestId;
@@ -33,6 +34,14 @@ public class UserSession {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getBookEntryId() {

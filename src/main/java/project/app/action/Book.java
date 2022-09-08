@@ -1,5 +1,6 @@
 package project.app.action;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -9,10 +10,11 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import project.app.model.BookEntry;
 import project.app.service.DBService;
+import project.app.service.EmailNotification;
 
 public class Book extends ActionSupport implements SessionAware {
     private Map<String, Object> userSession;
-    
+
     private String error;
     private String ISBN;
     private BookEntry bookEntryBean;
@@ -43,15 +45,20 @@ public class Book extends ActionSupport implements SessionAware {
     public String submitCheckoutRequest() {
         int userId = (int) userSession.get("id");
         int bookEntryId = (int) userSession.get("bookEntryId");
+        
         try {
+            bookEntryBean = DBService.getBookEntryById(bookEntryId);
             DBService.addCheckoutRequest(userId, bookEntryId);
+            EmailNotification.notifyAdminCheckoutRequest(bookEntryBean.getTitle(), (String) userSession.get("firstName"), userId, (String) userSession.get("email"));
             return SUCCESS;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException | IOException e) {
             error = e.toString();
             e.printStackTrace();
             return ERROR;
         }
     }
+
+
 
     public BookEntry getBookEntryBean() {
         return bookEntryBean;

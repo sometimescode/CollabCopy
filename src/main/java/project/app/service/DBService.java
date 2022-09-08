@@ -35,7 +35,7 @@ public class DBService {
         Connection connection;
         String URL = "jdbc:mysql://localhost:3306/appdb?useTimezone=true&serverTimezone=UTC";
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection(URL, "root", "password");
+        connection = DriverManager.getConnection(URL, "root", "meljamaica");
 
         return connection;
     }
@@ -70,7 +70,7 @@ public class DBService {
         try {
             connection = connectToDB();
 
-            String sql = "SELECT id, first_name, role FROM accounts\n" + 
+            String sql = "SELECT id, first_name, role, email FROM accounts\n" + 
                 "WHERE username = '" + account.getUsername() + "'\n" +
                 "AND password = '" + account.getPassword() + "'";
             preparedStatement = connection.prepareStatement(sql);

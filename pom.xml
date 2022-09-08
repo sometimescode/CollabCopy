@@ -72,6 +72,14 @@
       <artifactId>struts2-config-browser-plugin</artifactId>
       <version>${struts2.version}</version>
     </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
+    <dependency>
+      <groupId>com.sendgrid</groupId>
+      <artifactId>sendgrid-java</artifactId>
+      <version>4.9.3</version>
+    </dependency>
+
   </dependencies>
 
   <build>
