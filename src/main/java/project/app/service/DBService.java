@@ -27,6 +27,7 @@ import project.app.model.BookEntry;
 import project.app.model.CheckoutRecord;
 import project.app.model.CheckoutRecordInnerJoinBookEntryLeftJoinAccount;
 import project.app.model.OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount;
+import project.app.model.Rule;
 import project.app.model.User;
 import project.app.model.UserSession;
 
@@ -36,7 +37,7 @@ public class DBService {
         Connection connection;
         String URL = "jdbc:mysql://localhost:3306/appdb?useTimezone=true&serverTimezone=UTC";
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection(URL, "root", "meljamaica");
+        connection = DriverManager.getConnection(URL, "root", "password");
 
         return connection;
     }
@@ -1416,6 +1417,39 @@ public class DBService {
             statement.executeUpdate(sql);
          } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
+    public static List<Rule> getRules() throws SQLException, ClassNotFoundException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+   
+        List<Rule> rules = new ArrayList<Rule>();
+
+        try {
+            connection = connectToDB();
+
+
+            String sql = "SELECT id, ruleName, ruleValue \n" +
+                "FROM rules\n" +
+                "ORDER BY id ASC";
+
+            preparedStatement = connection.prepareStatement(sql);
+            ResultSet rs = preparedStatement.executeQuery();
+                            
+            while(rs.next()){  
+                Rule rule = new Rule();
+                rule.setDbId(rs.getInt(1));
+                rule.setRuleName(rs.getString(2));
+                rule.setRuleValue(rs.getString(3));
+                
+                rules.add(rule);
+            }
+
+            return rules;
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
          }
     }

@@ -162,6 +162,11 @@
 			<result name="success">pages/checkoutRecords.jsp</result>
             <result name="error">pages/error.jsp</result>
 		</action>
+
+        <action name="manageRules" class="project.app.action.AdminManageRules">
+			<result name="success">pages/rules.jsp</result>
+            <result name="error">pages/error.jsp</result>
+		</action>
 	</package>
 
     <package name="adminBook" namespace="/admin/book" extends="struts-default">
