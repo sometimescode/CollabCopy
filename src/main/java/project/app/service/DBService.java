@@ -3,6 +3,7 @@ package project.app.service;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Blob;
@@ -242,7 +243,7 @@ public class DBService {
          }
     }
 
-    public static int addBookEntryGetId(BookEntry bookEntry) throws SQLException, ClassNotFoundException, IOException {
+    public static int addBookEntryGetId(BookEntry bookEntry, boolean newCoverUpload, File file) throws SQLException, ClassNotFoundException, IOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ByteArrayOutputStream baos = null;
@@ -252,10 +253,18 @@ public class DBService {
         try {
             connection = connectToDB();
 
-            URL url = new URL(bookEntry.getCover());
-            BufferedImage image = ImageIO.read(url);
-            baos = new ByteArrayOutputStream(64000);
-            ImageIO.write(image, "jpg", baos);
+
+            if(newCoverUpload) {
+                BufferedImage image = ImageIO.read(file);
+                baos = new ByteArrayOutputStream(64000);
+                ImageIO.write(image, "jpeg", baos);
+            } else {
+                URL url = new URL(bookEntry.getCover());
+                BufferedImage image = ImageIO.read(url);
+                baos = new ByteArrayOutputStream(64000);
+                ImageIO.write(image, "jpeg", baos);
+            }
+
             byte[] data = baos.toByteArray();
 
             String sql = "INSERT INTO book_entries(title, authors, cover, isbn, page_count, publisher, published_date, genre)\n" +
@@ -450,28 +459,53 @@ public class DBService {
          }
     }
 
-    public static void editBookEntry(BookEntry bookEntry) throws SQLException, ClassNotFoundException {
+    public static void editBookEntry(BookEntry bookEntry, boolean newCoverUpload, File file) throws SQLException, ClassNotFoundException, IOException {
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
+        ByteArrayOutputStream baos = null;
 
         try {
             connection = connectToDB();
 
-            statement = connection.createStatement();
             String sql = "UPDATE book_entries\n" + 
-                "SET title = " + "'" + bookEntry.getTitle() + "'," +
-                "authors = " + "'" + bookEntry.getAuthors() + "'," +
-                "page_count = " + "'" + bookEntry.getPageCount() + "'," +
-                "publisher = " + "'" + bookEntry.getPublisher() + "'," +
-                "published_date = " + "'" + new java.sql.Date(bookEntry.getPublishedDate().getTime()) + "'," +
-                "genre = " + "'" + bookEntry.getGenre() + "'\n" +
-                "WHERE ( id = '" + bookEntry.getDbId() +"')";
+            "SET title = ?," +
+            "authors = ?," +
+            "page_count = ?," +
+            "publisher = ?," +
+            "published_date = ?," +
+            "genre = ?";
+            
+            if(newCoverUpload) {
+                sql += ",cover = ?";
+            }
 
-            statement.executeUpdate(sql);
+            sql += "\nWHERE id = ?";
+            
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, bookEntry.getTitle());                    
+            preparedStatement.setString(2, bookEntry.getAuthors());
+            preparedStatement.setInt(3, bookEntry.getPageCount());
+            preparedStatement.setString(4, bookEntry.getPublisher());
+            preparedStatement.setDate(5, new java.sql.Date(bookEntry.getPublishedDate().getTime()));
+            preparedStatement.setString(6, bookEntry.getGenre());
+
+            if(newCoverUpload) {
+                BufferedImage image = ImageIO.read(file);
+                baos = new ByteArrayOutputStream(64000);
+                ImageIO.write(image, "jpeg", baos);
+                byte[] data = baos.toByteArray();
+                preparedStatement.setBinaryStream(7, new ByteArrayInputStream(data), (int) data.length);
+                preparedStatement.setInt(8, bookEntry.getDbId());
+            } else {
+                preparedStatement.setInt(7, bookEntry.getDbId());
+            }
+
+            preparedStatement.executeUpdate();
          } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
-         }
+            if (baos != null) try { baos.close(); } catch (IOException ignore) {}
+        }
     }
 
     public static void addBookCopy(BookCopy bookCopy) throws SQLException, ClassNotFoundException {
@@ -1386,4 +1420,41 @@ public class DBService {
          }
     }
     /////////////////////////////////////////////////////////////////
+    //test zone
+    //imported File java io
+    public static int testAddBookEntryGetId(File file, String contentType, String filename) throws SQLException, ClassNotFoundException, IOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ByteArrayOutputStream baos = null;
+
+        int bookEntryId = -1;
+
+        try {
+            connection = connectToDB();
+
+            BufferedImage image = ImageIO.read(file);
+            baos = new ByteArrayOutputStream(64000);
+            ImageIO.write(image, "jpeg", baos);
+            byte[] data = baos.toByteArray();
+
+            String sql = "INSERT INTO cover_test(cover)\n" +
+                "VALUES(?)";
+
+            preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setBinaryStream(1, new ByteArrayInputStream(data), (int) data.length);
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()){
+                bookEntryId = rs.getInt(1);
+            }
+
+            return bookEntryId; 
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+            if (baos != null) try { baos.close(); } catch (IOException ignore) {}
+         }
+    }
+    //test zone
 }

@@ -33,7 +33,6 @@
         <div class="card-body p-5">
 
           <h1>Add Book</h1>
-
           Auto-populate form with details from OpenLibrary using ISBN with the search form below or manually input the details.
           <s:form action="searchBookFromOpenLibrary">
             <s:textfield name="queryISBN" label="ISBN"/> 
@@ -42,12 +41,50 @@
 
           <div class="d-flex justify-content-center">
             <s:if test="openLibraryBookEntryBean.cover != null">
-              <img src="${openLibraryBookEntryBean.cover}" class="book-cover" alt="${openLibraryBookEntryBean.title}">
+              <div class="card text-center">
+                <div class="card-header">
+                  OPENLIBRARY Cover
+                </div>
+                <div class="card-body">
+                  <img src="${openLibraryBookEntryBean.cover}" class="book-cover" alt="${openLibraryBookEntryBean.title}">
+                </div>
+              </div>
             </s:if>
             <s:else>
-              <s:if test="bookEntryBean.cover != null">
-                <img src="${bookEntryBean.cover}" class="book-cover" alt="${bookEntryBean.title}">
+              <s:if test="bookEntryBean.cover != null && !bookEntryBean.cover.isBlank()">
+                <div class="card text-center">
+                  <div class="card-header">
+                    OPENLIBRARY Cover
+                  </div>
+                  <div class="card-body">
+                    <img src="${bookEntryBean.cover}" class="book-cover" alt="${bookEntryBean.title}">
+                  </div>
+                </div>
               </s:if>
+            </s:else>
+            <s:if test="newCoverUpload">
+              <div id="newCoverPreview">
+                <div class="card text-center">
+                  <div class="card-header">
+                    New Cover Preview
+                  </div>
+                  <div class="card-body">
+                    <img id="coverImgPreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                  </div>
+                </div>
+              </div>
+            </s:if>
+            <s:else>
+              <div id="newCoverPreview" style="display: none;">
+                <div class="card text-center">
+                  <div class="card-header">
+                    New Cover Preview
+                  </div>
+                  <div class="card-body">
+                    <img id="coverImgPreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                  </div>
+                </div>
+              </div>
             </s:else>
           </div>
 
@@ -63,27 +100,27 @@
                   <s:form action="copyToAddBookForm">
                     <div class="input-group mb-3">
                       <span class="input-group-text">Title</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.title" label="Title"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.title" label="Title" readonly="true"/>
                     </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">Author(s)</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.authors" label="Author(s)"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.authors" label="Author(s)" readonly="true"/>
                     </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">ISBN</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.ISBN" label="ISBN"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.ISBN" label="ISBN" readonly="true"/>
                     </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">Page Count</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.pageCount" label="Page Count"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.pageCount" label="Page Count" readonly="true"/>
                     </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">Publisher</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.publisher" label="Publisher"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.publisher" label="Publisher" readonly="true"/>
                     </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text">Published Date</span>
-                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.publishedDate" label="Published Date"/>
+                      <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.publishedDate" label="Published Date" readonly="true"/>
                     </div>
                     <s:hidden name="openLibraryBookEntryBean.cover"/>
                     <s:submit cssClass="btn btn-secondary w-100" value="Copy to Form"/>
@@ -93,7 +130,40 @@
             </div>
             <div class="col-sm-12 col-md-8">
               <div class="p-4">
-                <s:form action="addBookEntry">
+                <s:form action="addBookEntry" method="post" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <div class="card-footer text-muted">
+                      Upload New Cover Image if you do not want to use OpenLibrary's Cover or if no cover exists.
+                    </div>
+                    <div class="form-check form-switch">
+                      <s:if test="toggleCoverUploadSwitch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" disabled="true" checked>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Upload New Cover Image</label>
+                        <s:hidden name="newCoverUpload" />
+                      </s:if>
+                      <s:else>
+                        <s:checkbox cssClass="form-check-input" id="newCoverUploadCheckbox" name="newCoverUpload"/>
+                        <label class="form-check-label" for="newCoverUploadCheckbox">Upload New Cover Image</label>
+                      </s:else>
+                      
+                    </div>
+                    <s:if test="newCoverUpload">
+                      <div id="newCoverUploadDiv">
+                        <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                      </div>
+                    </s:if>
+                    <s:else>
+                      <div id="newCoverUploadDiv" style="display: none;">
+                        <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                        <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="upload" />
+                      </div>
+                    </s:else>
+                    <s:if test="!fileValidationString.isEmpty()">
+                      <ul class="text-danger col-form-label-sm">
+                        <li><span><s:property value="fileValidationString"/><span></li>
+                      </ul>
+                    </s:if> 
+                  </div>
                   <div class="form-floating mb-3">
                     <s:textfield cssClass="form-control" id="floatingTitle" name="bookEntryBean.title" placeholder="Title"/>
                     <label for="floatingTitle">Title</label>
@@ -145,5 +215,37 @@
     
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        console.log("loaded");
+        $("#newCoverUploadCheckbox").click(function() {
+          console.log("clicked");
+          if($(this).is(":checked")) {
+              $("#newCoverPreview").show(300);
+              $("#newCoverUploadDiv").show(300);
+          } else {
+              $("#newCoverPreview").hide(300);
+              $("#newCoverUploadDiv").hide(200);
+          }
+        });
+
+        function readURL(input) {
+          if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              $('#coverImgPreview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+          } else {
+            $('#coverImgPreview').attr('src', '');
+          }
+        }
+
+        $("#newCoverFileUpload").change(function() {
+          readURL(this);
+        });
+
+      });
+    </script>
   </body>
 </html>

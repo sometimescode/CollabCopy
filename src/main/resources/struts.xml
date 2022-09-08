@@ -286,4 +286,16 @@
             <result name="error">pages/error.jsp</result>
         </action>
     </package>
+
+    <package name="testSpace" namespace="/testSpace" extends="struts-default">
+        <action name="img">
+            <result name="success">pages/imgUploadForm.jsp</result>
+            <result name="error">pages/error.jsp</result>
+        </action>
+        <action name="doUpload" class="project.app.action.TestSpaceImg">
+            <result name="success">pages/imgUploadSuccess.jsp</result>
+            <result name="error">pages/error.jsp</result>
+        </action>
+
+    </package>
 </struts>
