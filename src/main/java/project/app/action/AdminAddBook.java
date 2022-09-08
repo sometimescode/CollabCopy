@@ -39,6 +39,7 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
     private File file;
     private String contentType;
     private String filename;
+    private String fileValidationString;
 
     private static final String COVEROL = "OpenLibrary";
 	private static final String COVERNEW = "Upload New Cover";
@@ -125,14 +126,18 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public String addBookEntry() {
         try {
-            System.out.println("VALUS newCoveruplolad" + newCoverUpload);
-            int bookEntryId = DBService.addBookEntryGetId(bookEntryBean, newCoverUpload, file);
-
-            if(bookEntryId != -1) {
-                userSession.put("bookEntryId", bookEntryId);
-                return SUCCESS;
+            if(newCoverUpload && file == null) {
+                fileValidationString = "New cover image is required.";
+                return INPUT;
             } else {
-                return ERROR;
+                int bookEntryId = DBService.addBookEntryGetId(bookEntryBean, newCoverUpload, file);
+
+                if(bookEntryId != -1) {
+                    userSession.put("bookEntryId", bookEntryId);
+                    return SUCCESS;
+                } else {
+                    return ERROR;
+                }
             }
         } catch (SQLException | ClassNotFoundException | IOException e) {
             if(e instanceof SQLIntegrityConstraintViolationException) {
@@ -244,6 +249,14 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public void setUploadFileName(String filename) {
         this.filename = filename;
+    }
+
+    public String getFileValidationString() {
+        return fileValidationString;
+    }
+
+    public void setFileValidationString(String fileValidationString) {
+        this.fileValidationString = fileValidationString;
     }
 
     @Override

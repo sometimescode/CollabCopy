@@ -26,6 +26,11 @@
       .book-details-cover {
         width: 100%;
       }
+
+      .book-cover {
+        width:148px;
+        height:200px;
+      }
     </style>
   </head>
   <body class="admin">
@@ -57,7 +62,7 @@
             </div>
             <div class="col-sm-12 col-md-8">
               <div class="p-4">
-                  <s:form action="editBookEntry">
+                  <s:form action="editBookEntry" method="post" enctype="multipart/form-data">
                     <s:textfield name="bookEntryBean.cover" hidden="true"/>
                     <s:textfield name="bookEntryBean.ISBN" hidden="true"/>
                     <div class="form-floating mb-3">
@@ -96,28 +101,58 @@
                       <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookEntryBean.genre" />
                     </div>
 
-                    <s:property value="newCoverUpload"/>
                     <div class="form-check form-switch mb-3">
                         <s:checkbox cssClass="form-check-input" id="newCoverUploadCheckbox" name="newCoverUpload"/>
                         <label class="form-check-label" for="newCoverUploadCheckbox">Upload New Cover Image</label>              
                     </div>
-                    <div id="newCoverUploadDiv" class="mb-3" style="display: none;">
-                      <div id="newCoverPreview">
-                        <div class="card text-center">
-                          <div class="card-header">
-                            New Cover Preview
-                          </div>
-                          <div class="card-body">
-                            <img id="coverImagePreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                    <s:if test="newCoverUpload">
+                      <div id="newCoverUploadDiv" class="mb-3">
+                        <div id="newCoverPreview">
+                          <div class="card text-center">
+                            <div class="card-header">
+                              New Cover Preview
+                            </div>
+                            <div class="card-body">
+                              <img id="coverImagePreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                            </div>
                           </div>
                         </div>
+                        <label for="newCoverFileUpload">Update Cover Image: </label>
+                        <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                        <div class="card-footer text-muted">
+                          You will not be able to revert to the previous image after replacing it.
+                        </div>
+                        <s:if test="!fileValidationString.isEmpty()">
+                          <ul class="text-danger col-form-label-sm">
+                            <li><span><s:property value="fileValidationString"/><span></li>
+                          </ul>
+                        </s:if> 
                       </div>
-                      <label for="newCoverFileUpload">Update Cover Image: </label>
-                      <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
-                      <div class="card-footer text-muted">
-                        You will not be able to revert to the previous image after replacing it.
+                    </s:if>
+                    <s:else>
+                      <div id="newCoverUploadDiv" class="mb-3" style="display: none;">
+                        <div id="newCoverPreview">
+                          <div class="card text-center">
+                            <div class="card-header">
+                              New Cover Preview
+                            </div>
+                            <div class="card-body">
+                              <img id="coverImagePreview" src="http://localhost:8080/app/images/no_cover.jpg" class="book-cover" alt="New Book Cover">
+                            </div>
+                          </div>
+                        </div>
+                        <label for="newCoverFileUpload">Update Cover Image: </label>
+                        <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                        <div class="card-footer text-muted">
+                          You will not be able to revert to the previous image after replacing it.
+                        </div>
+                        <s:if test="!fileValidationString.isEmpty()">
+                          <ul class="text-danger col-form-label-sm">
+                            <li><span><s:property value="fileValidationString"/><span></li>
+                          </ul>
+                        </s:if> 
                       </div>
-                    </div>
+                    </s:else>
                     <s:submit cssClass="btn btn-primary w-100" value="Edit"/>
                   </s:form>
               </div>

@@ -475,7 +475,6 @@ public class DBService {
             "published_date = ?," +
             "genre = ?";
             
-            System.out.println("NEWCOVERUPLOAD: " + newCoverUpload + "\nFILEEXIST?: " + file.exists());
             if(newCoverUpload) {
                 sql += ",cover = ?";
             }

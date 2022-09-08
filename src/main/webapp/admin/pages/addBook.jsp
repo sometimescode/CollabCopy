@@ -23,10 +23,6 @@
         width:148px;
         height:200px;
       }
-
-      .radio-padding {
-        padding-left: 5px;
-      }
     </style>
   </head>
   <body class="admin">
@@ -37,8 +33,6 @@
         <div class="card-body p-5">
 
           <h1>Add Book</h1>
-          OLBEB.C = <s:property value="openLibraryBookEntryBean.cover"></s:property>
-          BEB.C = <s:property value="bookEntryBean.cover"></s:property>
           Auto-populate form with details from OpenLibrary using ISBN with the search form below or manually input the details.
           <s:form action="searchBookFromOpenLibrary">
             <s:textfield name="queryISBN" label="ISBN"/> 
@@ -49,7 +43,7 @@
             <s:if test="openLibraryBookEntryBean.cover != null">
               <div class="card text-center">
                 <div class="card-header">
-                  OPENLIBRARY Cover 1
+                  OPENLIBRARY Cover
                 </div>
                 <div class="card-body">
                   <img src="${openLibraryBookEntryBean.cover}" class="book-cover" alt="${openLibraryBookEntryBean.title}">
@@ -60,7 +54,7 @@
               <s:if test="bookEntryBean.cover != null && !bookEntryBean.cover.isBlank()">
                 <div class="card text-center">
                   <div class="card-header">
-                    OPENLIBRARY Cover 2
+                    OPENLIBRARY Cover
                   </div>
                   <div class="card-body">
                     <img src="${bookEntryBean.cover}" class="book-cover" alt="${bookEntryBean.title}">
@@ -141,9 +135,6 @@
                     <div class="card-footer text-muted">
                       Upload New Cover Image if you do not want to use OpenLibrary's Cover or if no cover exists.
                     </div>
-                    <!-- Cover to Use: 
-                    <s:radio cssClass="radio-padding" name="selectedCover" list="coverOptionsList" /> -->
-                    Upload New Cover? <s:property value="newCoverUpload"/>
                     <div class="form-check form-switch">
                       <s:if test="toggleCoverUploadSwitch">
                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" disabled="true" checked>
@@ -158,17 +149,20 @@
                     </div>
                     <s:if test="newCoverUpload">
                       <div id="newCoverUploadDiv">
-                        <!-- <label for="newCoverFileUpload">Cover Image: </label> -->
                         <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
                       </div>
                     </s:if>
                     <s:else>
                       <div id="newCoverUploadDiv" style="display: none;">
-                        <!-- <label for="newCoverFileUpload">Cover Image: </label> -->
                         <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
                         <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="upload" />
                       </div>
                     </s:else>
+                    <s:if test="!fileValidationString.isEmpty()">
+                      <ul class="text-danger col-form-label-sm">
+                        <li><span><s:property value="fileValidationString"/><span></li>
+                      </ul>
+                    </s:if> 
                   </div>
                   <div class="form-floating mb-3">
                     <s:textfield cssClass="form-control" id="floatingTitle" name="bookEntryBean.title" placeholder="Title"/>

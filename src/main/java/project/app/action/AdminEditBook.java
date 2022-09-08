@@ -25,15 +25,21 @@ public class AdminEditBook extends ActionSupport implements SessionAware {
 
     private List<String> genreList = Arrays.asList(new String[] {"Fiction", "Non-Fiction"});
 
-    private File upload;
-    private String uploadContentType;
-    private String uploadFilename;
+    private File file;
+    private String contentType;
+    private String filename;
+    private String fileValidationString;
 
     public String editBookEntry() {
         try {
-            bookEntryBean.setDbId((int) userSession.get("bookEntryId"));
-            DBService.editBookEntry(bookEntryBean, newCoverUpload, upload);
-            return SUCCESS;
+            if(newCoverUpload && file == null) {
+                fileValidationString = "New cover image is required.";
+                return INPUT;
+            } else {
+                bookEntryBean.setDbId((int) userSession.get("bookEntryId"));
+                DBService.editBookEntry(bookEntryBean, newCoverUpload, file);
+                return SUCCESS;
+            }
         } catch (SQLException | ClassNotFoundException | IOException e) {
             error = e.toString();
             e.printStackTrace();
@@ -85,16 +91,16 @@ public class AdminEditBook extends ActionSupport implements SessionAware {
         this.error = error;
     }
 
-    public void setUpload(File upload) {
-        this.upload = upload;
+    public void setUpload(File file) {
+        this.file = file;
     }
 
-    public void setUploadContentType(String uploadContentType) {
-        this.uploadContentType = uploadContentType;
+    public void setUploadContentType(String contentType) {
+        this.contentType = contentType;
     }
 
-    public void setUploadFilename(String uploadFilename) {
-        this.uploadFilename = uploadFilename;
+    public void setUploadFileName(String filename) {
+        this.filename = filename;
     }
 
     public boolean isNewCoverUpload() {
@@ -103,6 +109,14 @@ public class AdminEditBook extends ActionSupport implements SessionAware {
 
     public void setNewCoverUpload(boolean newCoverUpload) {
         this.newCoverUpload = newCoverUpload;
+    }
+
+    public String getFileValidationString() {
+        return fileValidationString;
+    }
+
+    public void setFileValidationString(String fileValidationString) {
+        this.fileValidationString = fileValidationString;
     }
 
     @Override
