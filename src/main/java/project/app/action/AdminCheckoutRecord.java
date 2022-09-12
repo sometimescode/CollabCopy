@@ -3,13 +3,18 @@ package project.app.action;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.util.ValueStack;
 
+import project.app.model.AppConstants;
 import project.app.model.CheckoutRecord;
+import project.app.model.FetchedRules;
 import project.app.model.OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount;
 import project.app.service.DBService;
 
@@ -20,6 +25,7 @@ public class AdminCheckoutRecord extends ActionSupport implements SessionAware {
     private int checkoutRequestId;
     private CheckoutRecord checkoutRecordBean;
     private OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount checkoutRequestBean;
+    private FetchedRules rules;
 
     public String checkoutRecordForm() {
         try {
@@ -31,9 +37,13 @@ public class AdminCheckoutRecord extends ActionSupport implements SessionAware {
             checkoutRecordBean.setBorrowerId(checkoutRequest.getRequesterId());
             checkoutRecordBean.setOnlineCheckoutRequestId(checkoutRequest.getDbId());
             checkoutRecordBean.setBookCopyId(checkoutRequest.getRequestedCopyId());
+            
+            rules = new FetchedRules();
+            rules.setFetchedRules(DBService.getRulesHashMap());
+
             Calendar cal = Calendar.getInstance();
             cal.setTime( new Date() );
-            cal.add( Calendar.DATE, 7 );
+            cal.add( Calendar.DATE, rules.getMaxBorrowDuration() );
             checkoutRecordBean.setExpectedReturnDate(cal.getTime());
             
             return SUCCESS;
@@ -74,6 +84,14 @@ public class AdminCheckoutRecord extends ActionSupport implements SessionAware {
 
     public void setCheckoutRequestBean(OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount checkoutRequestBean) {
         this.checkoutRequestBean = checkoutRequestBean;
+    }
+
+    public FetchedRules getRules() {
+        return rules;
+    }
+
+    public void setRules(FetchedRules rules) {
+        this.rules = rules;
     }
 
     @Override

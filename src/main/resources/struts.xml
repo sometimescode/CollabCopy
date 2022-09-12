@@ -12,6 +12,27 @@
     <constant name="struts.freemarker.templatesCache.updateDelay" value="120"/>
     <constant name="struts.freemarker.mru.max.strong.size" value="120"/>
 
+    <package name="rulesFetchDefault" namespace="/" extends="struts-default">
+		<interceptors>
+
+			<interceptor name="rulesInterceptor"
+				class="project.app.interceptor.RulesInterceptor" />
+
+			<interceptor-stack name="rulesFetchStack">
+				<interceptor-ref name="defaultStack" />
+                <interceptor-ref name="rulesInterceptor" />
+			</interceptor-stack>
+
+		</interceptors>
+
+		<default-interceptor-ref name="rulesFetchStack" />
+
+        <action name="book" class="project.app.action.Book" method="execute">
+            <result name="success">pages/book.jsp</result>
+        </action>
+
+    </package>
+
     <package name="app" namespace="/" extends="struts-default">
         <action name="index">
             <result>index.jsp</result>
@@ -45,10 +66,6 @@
             <result name="success">pages/catalog.jsp</result>
         </action>
 
-        <action name="book" class="project.app.action.Book" method="execute">
-            <result name="success">pages/book.jsp</result>
-        </action>
-
         <action name="searchBookFromDB" class="project.app.action.CatalogSearch">
             <result name="success">pages/searchResults.jsp</result>
         </action>
@@ -66,12 +83,29 @@
         </action>
     </package>
 
-    <package name="user" namespace="/user" extends="struts-default">
+    <package name="rulesFetchUser" namespace="/user" extends="struts-default">
+		<interceptors>
+
+			<interceptor name="rulesInterceptor"
+				class="project.app.interceptor.RulesInterceptor" />
+
+			<interceptor-stack name="rulesFetchStack">
+				<interceptor-ref name="defaultStack" />
+                <interceptor-ref name="rulesInterceptor" />
+			</interceptor-stack>
+
+		</interceptors>
+
+		<default-interceptor-ref name="rulesFetchStack" />
+
         <action name="profile" class="project.app.action.UserProfile" method="execute">
             <result name="success">pages/dashboard.jsp</result>
             <result name="error">pages/error.jsp</result>
         </action>
 
+    </package>
+
+    <package name="user" namespace="/user" extends="struts-default">
         <action name="cancelPendingCheckoutRequest" class="project.app.action.UserProfile" method="cancelPendingCheckoutRequest">
             <result name="success" type="redirectAction">
                 <param name="actionName">profile</param>
@@ -160,6 +194,11 @@
 
         <action name="manageCheckoutRecords" class="project.app.action.AdminManageCheckoutRecords">
 			<result name="success">pages/checkoutRecords.jsp</result>
+            <result name="error">pages/error.jsp</result>
+		</action>
+
+        <action name="manageRules" class="project.app.action.AdminManageRules">
+			<result name="success">pages/rules.jsp</result>
             <result name="error">pages/error.jsp</result>
 		</action>
 	</package>
@@ -287,11 +326,53 @@
         </action>
     </package>
 
-    <package name="testSpace" namespace="/testSpace" extends="struts-default">
+    <package name="adminRule" namespace="/admin/rule" extends="struts-default">
+        <action name="ruleForm" class="project.app.action.AdminRule" method="ruleForm">
+			<result name="success">pages/rule.jsp</result>
+            <result name="error">pages/error.jsp</result>
+		</action>
+        <action name="editRule" class="project.app.action.AdminEditRule" method="editRule">
+            <result name="success" type="redirectAction">
+                <param name="actionName">manageRules</param>
+                <param name="namespace">/admin</param>
+            </result>
+            <result name="input" type="redirectAction">
+                <param name="actionName">manageRules</param>
+                <param name="namespace">/admin</param>
+            </result>
+            <result name="error">pages/error.jsp</result>
+        </action>
+    </package>
+
+
+    <package name="rulesFetchTestSpace" namespace="/testSpace" extends="struts-default">
+		<interceptors>
+
+			<interceptor name="rulesInterceptor"
+				class="project.app.interceptor.RulesInterceptor" />
+
+			<interceptor-stack name="rulesFetchStack">
+				<interceptor-ref name="defaultStack" />
+                <interceptor-ref name="rulesInterceptor" />
+			</interceptor-stack>
+
+		</interceptors>
+
+		<default-interceptor-ref name="rulesFetchStack" />
+
         <action name="img">
             <result name="success">pages/imgUploadForm.jsp</result>
             <result name="error">pages/error.jsp</result>
         </action>
+        <action name="doUpload" class="project.app.action.TestSpaceImg">
+            <result name="success">pages/imgUploadSuccess.jsp</result>
+            <result name="error">pages/error.jsp</result>
+        </action>
+
+    </package>
+
+    <package name="testSpace" namespace="/testSpace" extends="struts-default">
+
         <action name="doUpload" class="project.app.action.TestSpaceImg">
             <result name="success">pages/imgUploadSuccess.jsp</result>
             <result name="error">pages/error.jsp</result>
