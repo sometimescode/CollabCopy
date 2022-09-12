@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -843,7 +844,9 @@ public class DBService {
                 "WHERE requester_id = '" + userId + "' " +
                 "AND requested_book_id = '" + bookEntryId + "' " +
                 "AND ocr.status = 'Pending'\n" +
-                "OR (ocr.status = 'Approved' AND cr.online_checkout_request_id IS NULL)";
+                "OR (requester_id = '" + userId + "' " +
+                "AND requested_book_id = '" + bookEntryId + "' " + 
+                "AND ocr.status = 'Approved' AND cr.online_checkout_request_id IS NULL)";
             
             ResultSet rs = statement.executeQuery(sql);
 
@@ -1421,17 +1424,51 @@ public class DBService {
          }
     }
 
-    public static List<Rule> getRules() throws SQLException, ClassNotFoundException {
+    public static Rule getRuleById(int id) throws SQLException, ClassNotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-   
-        List<Rule> rules = new ArrayList<Rule>();
+        Rule rule = null;
 
         try {
             connection = connectToDB();
 
 
-            String sql = "SELECT id, ruleName, ruleValue \n" +
+            String sql = "SELECT id, ruleName, ruleValue, ruleDenomination, ruleDescription \n" +
+                "FROM rules\n" +
+                "WHERE id = ?";
+
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+                            
+            while(rs.next()){  
+                rule = new Rule();
+                rule.setDbId(rs.getInt(1));
+                rule.setRuleName(rs.getString(2));
+                rule.setRuleValue(rs.getInt(3));
+                rule.setRuleDenomination(rs.getString(4));
+                rule.setRuleDescription(rs.getString(5));
+            }
+
+            return rule;
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
+    public static HashMap<String, Rule> getRulesHashMap() throws SQLException, ClassNotFoundException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+   
+        HashMap<String, Rule> rules = new HashMap<String, Rule>();
+
+        try {
+            connection = connectToDB();
+
+
+            String sql = "SELECT id, ruleName, ruleValue, ruleDenomination, ruleDescription \n" +
                 "FROM rules\n" +
                 "ORDER BY id ASC";
 
@@ -1442,14 +1479,70 @@ public class DBService {
                 Rule rule = new Rule();
                 rule.setDbId(rs.getInt(1));
                 rule.setRuleName(rs.getString(2));
-                rule.setRuleValue(rs.getString(3));
-                
-                rules.add(rule);
+                rule.setRuleValue(rs.getInt(3));
+                rule.setRuleDenomination(rs.getString(4));
+                rule.setRuleDescription(rs.getString(5));
+                rules.put(rule.getRuleName(), rule);
             }
 
             return rules;
          } finally {
             if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
+    public static void editRule(int ruleId, int ruleValue) throws SQLException, ClassNotFoundException, IOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = connectToDB();
+
+            String sql = "UPDATE rules\n" + 
+            "SET ruleValue = ?\n" +
+            "WHERE id = ?";
+            
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, ruleValue);                    
+            preparedStatement.setInt(2, ruleId);
+
+            preparedStatement.executeUpdate();
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static int countRequestedAndCheckedOutByUser(int userId) throws SQLException, ClassNotFoundException {
+        Connection connection = null;
+        Statement statement = null;
+
+        try {
+            connection = connectToDB();
+
+            statement = connection.createStatement();
+            String sql = "SELECT COUNT(*) AS recordCount\n" + 
+                "FROM online_checkout_requests ocr\n" + 
+                "LEFT JOIN checkout_records cr\n" + 
+                "ON ocr.id = cr.online_checkout_request_id\n" +
+                "WHERE requester_id = '" + userId + "' " +
+                "AND\n" + 
+                "(\n" +
+                "    (ocr.status = 'Pending') OR\n" +
+                "    (ocr.status = 'Approved' AND cr.online_checkout_request_id IS NULL) OR\n" +
+                "    (cr.online_checkout_request_id IS NOT NULL AND cr.status = 'Checked Out')\n" +
+                ")";
+                
+            ResultSet rs = statement.executeQuery(sql);
+
+            rs.next();
+
+            int count = rs.getInt("recordCount");
+
+            return count; 
+         } finally {
+            if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
          }
     }

@@ -40,7 +40,12 @@
             <div class="p-2 bd-highlight"><a class="float-end btn btn-primary" href="<s:url action='viewAccount' namespace='/user'/>">View Account Details</a></div>
           </div>
           
-          <hr>
+          <hr class="mb-0">
+
+          <div class="card-footer text-muted">
+            Note: You can only request for checkout and/or checkout a maximum of <s:property value="interceptorRules.getMaxBorrowLimit()"></s:property> books at a time. </br>
+            You currently have <s:property value="countRequestedAndCheckedOutByUser"/> books requested for checkout and/or checked out. </br>
+          </div>
 
           <div class="card my-4">
             <h5 class="card-header">Currently Borrowing</h5>

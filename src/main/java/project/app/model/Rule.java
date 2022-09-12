@@ -3,7 +3,9 @@ package project.app.model;
 public class Rule {
     private int dbId;
     private String ruleName;
-    private String ruleValue;
+    private int ruleValue;
+    private String ruleDenomination;
+    private String ruleDescription;
     public int getDbId() {
         return dbId;
     }
@@ -16,14 +18,27 @@ public class Rule {
     public void setRuleName(String ruleName) {
         this.ruleName = ruleName;
     }
-    public String getRuleValue() {
+    public int getRuleValue() {
         return ruleValue;
     }
-    public void setRuleValue(String ruleValue) {
+    public void setRuleValue(int ruleValue) {
         this.ruleValue = ruleValue;
+    }
+    public String getRuleDenomination() {
+        return ruleDenomination;
+    }
+    public void setRuleDenomination(String ruleDenomination) {
+        this.ruleDenomination = ruleDenomination;
+    }
+    public String getRuleDescription() {
+        return ruleDescription;
+    }
+    public void setRuleDescription(String ruleDescription) {
+        this.ruleDescription = ruleDescription;
     }
     @Override
     public String toString() {
-        return "Rule [dbId=" + dbId + ", ruleName=" + ruleName + ", ruleValue=" + ruleValue + "]";
+        return "Rule [dbId=" + dbId + ", ruleDenomination=" + ruleDenomination + ", ruleDescription=" + ruleDescription
+                + ", ruleName=" + ruleName + ", ruleValue=" + ruleValue + "]";
     }
   }

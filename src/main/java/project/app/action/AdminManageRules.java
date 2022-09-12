@@ -1,7 +1,7 @@
 package project.app.action;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts2.interceptor.SessionAware;
@@ -15,11 +15,12 @@ public class AdminManageRules extends ActionSupport implements SessionAware {
     private Map<String, Object> userSession;
     
     private String error;
-    private List<Rule> rules;
+    private HashMap<String, Rule> rules;
 
     public String execute() {
         try {
-            rules = DBService.getRules();
+            rules = DBService.getRulesHashMap();
+            
             return SUCCESS;
         } catch (ClassNotFoundException | SQLException e) {
             error = e.toString();
@@ -28,11 +29,11 @@ public class AdminManageRules extends ActionSupport implements SessionAware {
         }
     }
 
-    public List<Rule> getRules() {
+    public HashMap<String, Rule> getRules() {
         return rules;
     }
 
-    public void setRules(List<Rule> rules) {
+    public void setRules(HashMap<String, Rule> rules) {
         this.rules = rules;
     }
 

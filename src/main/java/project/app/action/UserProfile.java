@@ -23,6 +23,7 @@ public class UserProfile extends ActionSupport implements SessionAware {
     private List<CheckoutRecordInnerJoinBookEntryLeftJoinAccount> allCheckoutRecords;
     private int checkoutRequestId;
     private int bookCopyId;
+    private int countRequestedAndCheckedOutByUser;
  
     public String execute() {
         int userId = (int) userSession.get("id");
@@ -32,6 +33,7 @@ public class UserProfile extends ActionSupport implements SessionAware {
             approvedCheckoutRequests = DBService.getApprovedCheckoutRequestsByUser(userId);
             onlineCheckoutRequests = DBService.getCheckoutRequestsByUser(userId);
             allCheckoutRecords = DBService.getCheckoutRecordsByUser(userId);
+            countRequestedAndCheckedOutByUser = DBService.countRequestedAndCheckedOutByUser(userId);
             return SUCCESS;
         } catch (SQLException | ClassNotFoundException e) {
             error = e.toString();
@@ -127,6 +129,14 @@ public class UserProfile extends ActionSupport implements SessionAware {
 
     public void setBookCopyId(int bookCopyId) {
         this.bookCopyId = bookCopyId;
+    }
+
+    public int getCountRequestedAndCheckedOutByUser() {
+        return countRequestedAndCheckedOutByUser;
+    }
+
+    public void setCountRequestedAndCheckedOutByUser(int countRequestedAndCheckedOutByUser) {
+        this.countRequestedAndCheckedOutByUser = countRequestedAndCheckedOutByUser;
     }
 
     @Override

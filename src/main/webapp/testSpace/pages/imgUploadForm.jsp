@@ -21,6 +21,13 @@
     <div class="container">
       <img id="blah" alt="your image" />
 
+      Max Borrow Limit: <s:property value="interceptorRules.getMaxBorrowLimit()"></s:property>
+      Max Borrow Duration: <s:property value="interceptorRules.getMaxBorrowDuration()"></s:property>
+      Late Fee: <s:property value="interceptorRules.getLateFee()"></s:property>
+      Max Reservation Duration: <s:property value="interceptorRules.getMaxReservationDuration()"></s:property>
+      Failure to Pick Up Fee: <s:property value="interceptorRules.getFailureToPickUpFee()"></s:property>
+      Max Strikes: <s:property value="interceptorRules.getMaxStrikes()"></s:property>
+
 <input type="file" 
     onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])">
       <s:form action="doUpload" method="post" enctype="multipart/form-data">
