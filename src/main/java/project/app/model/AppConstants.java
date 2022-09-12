@@ -2,6 +2,7 @@ package project.app.model;
 
 public interface AppConstants {
 	
+	public static final String USER_SESSION_ROLE = "role";
 	public static final String RULES = "interceptorRules";
 	public static final String RULE_NAME_MAX_BORROW_LIMIT = "Max Borrow Limit";
 	public static final String RULE_NAME_MAX_BORROW_DURATION = "Max Borrow Duration";
