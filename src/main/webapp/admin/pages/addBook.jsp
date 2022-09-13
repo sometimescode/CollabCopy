@@ -40,7 +40,7 @@
           </s:form>
 
           <div class="d-flex justify-content-center">
-            <s:if test="openLibraryBookEntryBean.cover != null">
+            <s:if test="openLibraryBookEntryBean.cover != null && !openLibraryBookEntryBean.cover.isBlank()">
               <div class="card text-center">
                 <div class="card-header">
                   OPENLIBRARY Cover
@@ -123,6 +123,8 @@
                       <s:textfield cssClass="form-control" name="openLibraryBookEntryBean.publishedDate" label="Published Date" readonly="true"/>
                     </div>
                     <s:hidden name="openLibraryBookEntryBean.cover"/>
+                    <s:hidden name="toggleCoverUploadSwitch"/>
+                    <s:hidden name="newCoverUpload"/>
                     <s:submit cssClass="btn btn-secondary w-100" value="Copy to Form"/>
                   </s:form>
                 </div>
@@ -150,19 +152,25 @@
                     <s:if test="newCoverUpload">
                       <div id="newCoverUploadDiv">
                         <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
+                        <s:if test="fileValidationString != null && !fileValidationString.isEmpty()">
+                          <ul class="text-danger col-form-label-sm">
+                            <li><span><s:property value="fileValidationString"/><span></li>
+                          </ul>
+                        </s:if> 
                       </div>
                     </s:if>
                     <s:else>
                       <div id="newCoverUploadDiv" style="display: none;">
                         <s:file cssClass="form-control" id="newCoverFileUpload" name="upload" label="File"/>
                         <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="upload" />
+                        <s:if test="fileValidationString != null && !fileValidationString.isEmpty()">
+                          <ul class="text-danger col-form-label-sm">
+                            <li><span><s:property value="fileValidationString"/><span></li>
+                          </ul>
+                        </s:if> 
                       </div>
                     </s:else>
-                    <s:if test="!fileValidationString.isEmpty()">
-                      <ul class="text-danger col-form-label-sm">
-                        <li><span><s:property value="fileValidationString"/><span></li>
-                      </ul>
-                    </s:if> 
+                    <s:hidden name="toggleCoverUploadSwitch" />
                   </div>
                   <div class="form-floating mb-3">
                     <s:textfield cssClass="form-control" id="floatingTitle" name="bookEntryBean.title" placeholder="Title"/>
