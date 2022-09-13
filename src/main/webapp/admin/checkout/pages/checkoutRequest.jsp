@@ -15,11 +15,9 @@
     
   </head>
   <body>
-    <!-- Create Checkout Record for Checkout Request ID <span class="fw-bold"><s:property value="checkoutRequestId"/></span>
+    Create Checkout Record for Checkout Request ID <span class="fw-bold"><s:property value="checkoutRequestId"/></span>
 
-    <hr> -->
-    <p>Requester id: <s:property value="requesterId" /></p>
-    <p>checkout request id: <s:property value="checkoutRequestId" /></p>
+    <hr>
     <s:if test="bookCopySelectList.size() == 0">
       <s:form action="rejectCheckoutRequest">
         There are currently no more available copies.
@@ -32,7 +30,7 @@
     <s:else>
       <s:form action="approveCheckoutRequest">
         <div class="form-floating mb-3">
-          <s:select cssClass="form-control form-select" id="floatingBookCopyId" name="checkoutRequestBean.requestedCopyId" placeholder="Requested Copy Id" list="bookCopySelectList"/>
+          <s:select cssClass="form-control form-select" id="floatingBookCopyId" name="checkoutRequestBean.requestedCopyId" placeholder="Requested Copy Id" list="bookCopySelectList" listKey="dbId" listValue="serialId"/>
           <label for="floatingBookCopyId">Select Book Copy to Reserve</label>
           <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="checkoutRequestBean.requestedCopyId" />
         </div>

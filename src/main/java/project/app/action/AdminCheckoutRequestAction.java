@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import project.app.model.BookCopy;
 import project.app.model.OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount;
+import project.app.model.SerialId;
 import project.app.service.DBService;
 import project.app.service.EmailNotification;
 
@@ -22,7 +23,7 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
     private OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount checkoutRequestBean;
     private int checkoutRequestId;
     private int requesterId;
-    private List<String> bookCopySelectList;
+    private List<SerialId> bookCopySelectList;
 
     public String checkoutRequestForm() {
         try {
@@ -31,9 +32,9 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
            
             List<BookCopy> availableBookCopies = new ArrayList<BookCopy>();
             availableBookCopies = DBService.getBookCopies(bookEntryId, true);
-            bookCopySelectList = new ArrayList<String>();
+            bookCopySelectList = new ArrayList<SerialId>();
             for (int i = 0; i < availableBookCopies.size(); i++) {
-                bookCopySelectList.add(Integer.toString(availableBookCopies.get(i).getDbId()));
+                bookCopySelectList.add(new SerialId(availableBookCopies.get(i).getDbId(), availableBookCopies.get(i).getSerialId()));
             }
 
             return SUCCESS;
@@ -102,11 +103,11 @@ public class AdminCheckoutRequestAction extends ActionSupport implements Session
         this.checkoutRequestBean = checkoutRequestBean;
     }
 
-    public List<String> getBookCopySelectList() {
+    public List<SerialId> getBookCopySelectList() {
         return bookCopySelectList;
     }
 
-    public void setBookCopySelectList(List<String> bookCopySelectList) {
+    public void setBookCopySelectList(List<SerialId> bookCopySelectList) {
         this.bookCopySelectList = bookCopySelectList;
     }
 
