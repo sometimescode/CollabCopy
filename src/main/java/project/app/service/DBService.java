@@ -510,7 +510,7 @@ public class DBService {
         }
     }
 
-    public static void addBookCopy(BookCopy bookCopy) throws SQLException, ClassNotFoundException {
+    public static void addBookCopy(BookCopy bookCopy, int copiesToGenerate) throws SQLException, ClassNotFoundException {
         Connection connection = null;
         Statement statement = null;
 
@@ -523,6 +523,19 @@ public class DBService {
                 bookCopy.getBookEntryId()+"','"+
                 bookCopy.getSerialId()+"','"+
                 bookCopy.getPurchasePrice()+"')";
+            
+            if(copiesToGenerate > 1) {
+                String[] split = bookCopy.getSerialId().split("-");
+                String serialIdPartA = split[0] + "-"; 
+                int serialIdPartB = Integer.parseInt(split[1]) + 1;
+                for(int i = 0; i < copiesToGenerate - 1; i++) {
+                    sql += ",('"+
+                    bookCopy.getBookEntryId()+"','"+
+                    serialIdPartA + (serialIdPartB + i)+"','"+
+                    bookCopy.getPurchasePrice()+"')";
+                }
+                
+            }
             statement.executeUpdate(sql);
          } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
@@ -1543,6 +1556,36 @@ public class DBService {
             return count; 
          } finally {
             if (statement != null) try { statement.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+         }
+    }
+
+    public static String getLatestBookCopySerial(int bookEntryId) throws SQLException, ClassNotFoundException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String serialId = null;
+
+        try {
+            connection = connectToDB();
+
+            String sql = "SELECT serial_id\n" +
+                "FROM book_copies\n" +
+                "WHERE book_entry_id = ?\n" +
+                "ORDER BY id DESC\n" + 
+                "LIMIT 1";
+                        
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, bookEntryId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+                            
+            while(rs.next()){  
+                serialId = rs.getString(1);
+            }
+
+            return serialId;
+         } finally {
+            if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException ignore) {}
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
          }
     }
