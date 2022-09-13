@@ -49,8 +49,6 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
         toggleCoverUploadSwitch = true;
         newCoverUpload = true;
 
-        System.out.println("\n\n\n\n\n\n\n ahhhh toggle " + toggleCoverUploadSwitch + "\n newCover" + newCoverUpload);
- 
         return SUCCESS;
     }
 
@@ -85,23 +83,25 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
             date = new SimpleDateFormat("MMMM d, yyyy").parse(ISBNResponseBean.getPublish_date());
         } catch (ParseException e) {
             date = null;
-            e.printStackTrace();
         }
         openLibraryBookEntryBean.setPublishedDate(date);
         
         if(ISBNResponseBean.getCover() != null) {
             openLibraryBookEntryBean.setCover(ISBNResponseBean.getCover().getMedium());
         }
+
+        if(ISBNResponseBean.getCover() != null) {
+            toggleCoverUploadSwitch = false;
+            newCoverUpload = false;
+        } else {
+            toggleCoverUploadSwitch = true;
+            newCoverUpload = true;
+        }
     }
 
     public String searchBookFromOpenLibrary() {
         try {
-            System.out.println("F\n\n\n\n\n\n\n\n\n\n\n\n\n\n IMBEING PRINTED \n\n\n\n\n\n\n\n");
             ISBNResponseBean = OpenLibraryAPIService.searchISBNAPI(queryISBN);
-            toggleCoverUploadSwitch = false;
-            if(ISBNResponseBean.getCover() != null) {
-                newCoverUpload = false;
-            }
             populateFieldSuggestions();
             return SUCCESS;
         } catch (IOException e) {
