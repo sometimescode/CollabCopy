@@ -19,6 +19,40 @@
   </head>
   <body>
     <div class="container">
+      <div class="input-group mb-3">
+        <div class="form-floating">
+            <input type="text" class="form-control" name="code1" placeholder="Code 1">
+            <label for="code1">Code 1</label>
+        </div>
+        <span class="input-group-text"><i class="fas fa-times"></i></span>
+      </div>
+      
+      <div class="input-group mb-3">
+        <span class="input-group-text">Serial ID</span>
+        <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)" readonly="true">
+        <span class="input-group-text">-</span>
+        <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+      </div>
+
+      <div class="input-group mb-3 w-100">
+        <span class="input-group-text w-10">Serial ID</span>
+        <div class="form-floating w-50">
+          <input type="text" class="form-control" id="floatingSerialIds" placeholder="Serial Id" readonly="true"/>
+          <label for="floatingSerialIds">ISBN</label>
+        </div>
+        <span class="input-group-text w-5">-</span>
+        <div class="form-floating w-35">
+          <input type="number" class="form-control" id="floatingSerialId" placeholder="Serial Id"/>
+          <label for="floatingSerialId">Counter</label>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <input type="text" class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+        <span class="input-group-text">$</span>
+        <span class="input-group-text">0.00</span>
+      </div>
+
       <img id="blah" alt="your image" />
 
       Max Borrow Limit: <s:property value="interceptorRules.getMaxBorrowLimit()"></s:property>

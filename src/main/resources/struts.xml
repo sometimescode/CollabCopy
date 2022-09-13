@@ -277,6 +277,7 @@
 
         <action name="addBookCopyRedirect" class="project.app.action.AdminAddBookCopy" method="execute">
 			<result name="success">pages/bookCopy.jsp</result>
+            <result name="input">pages/bookCopy.jsp</result>
             <result name="error">pages/error.jsp</result>
 		</action>
 

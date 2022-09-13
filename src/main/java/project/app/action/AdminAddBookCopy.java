@@ -19,11 +19,27 @@ public class AdminAddBookCopy extends ActionSupport implements SessionAware {
     private BookEntry bookEntryBean;
     private String error;
     private String validationString;
+    private int bookCopyLatestSerialCount;
+    private boolean toggleAutoGenerateCopies;
+    private int copiesToGenerate;
 
     public String execute() {
+        bookEntryBean = new BookEntry();
+        toggleAutoGenerateCopies = false;
+        copiesToGenerate = 2;
+
         int bookEntryId = (int) userSession.get("bookEntryId");
         try {
             bookEntryBean = DBService.getBookEntryById(bookEntryId);
+
+            String serialId = DBService.getLatestBookCopySerial(bookEntryBean.getDbId());
+
+            if(serialId != null) {
+                bookCopyLatestSerialCount = Integer.parseInt(serialId.split("-")[1]) + 1; 
+            } else {
+                bookCopyLatestSerialCount = 1;
+            }                
+
             return SUCCESS;
         } catch (ClassNotFoundException | SQLException e) {
             error = e.toString();
@@ -32,10 +48,22 @@ public class AdminAddBookCopy extends ActionSupport implements SessionAware {
         }
     }
 
+    public void validate(){
+        if(toggleAutoGenerateCopies && copiesToGenerate < 2) {
+            addFieldError("copiesToGenerate", "Copies to generate must be greater than 1.");
+        }
+    }
+
     public String addBookCopy() {
         bookCopyBean.setBookEntryId((int) userSession.get("bookEntryId"));
+        bookCopyBean.setSerialId(bookEntryBean.getISBN() + "-" + bookCopyLatestSerialCount);
+
+        if(!toggleAutoGenerateCopies) {
+            copiesToGenerate = 1;
+        }
+
         try {
-            DBService.addBookCopy(bookCopyBean);
+            DBService.addBookCopy(bookCopyBean, copiesToGenerate);
             return SUCCESS;
         } catch (SQLException | ClassNotFoundException e) {
             if(e instanceof SQLIntegrityConstraintViolationException) {
@@ -87,6 +115,30 @@ public class AdminAddBookCopy extends ActionSupport implements SessionAware {
 
     public void setValidationString(String validationString) {
         this.validationString = validationString;
+    }
+
+    public int getBookCopyLatestSerialCount() {
+        return bookCopyLatestSerialCount;
+    }
+
+    public void setBookCopyLatestSerialCount(int bookCopyLatestSerialCount) {
+        this.bookCopyLatestSerialCount = bookCopyLatestSerialCount;
+    }
+
+    public boolean isToggleAutoGenerateCopies() {
+        return toggleAutoGenerateCopies;
+    }
+
+    public void setToggleAutoGenerateCopies(boolean toggleAutoGenerateCopies) {
+        this.toggleAutoGenerateCopies = toggleAutoGenerateCopies;
+    }
+
+    public int getCopiesToGenerate() {
+        return copiesToGenerate;
+    }
+
+    public void setCopiesToGenerate(int copiesToGenerate) {
+        this.copiesToGenerate = copiesToGenerate;
     }
 
     @Override
