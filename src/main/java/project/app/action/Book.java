@@ -20,6 +20,7 @@ public class Book extends ActionSupport implements SessionAware {
     private BookEntry bookEntryBean;
     private int availableCopies;
     private boolean submittedPendingRequest;
+    private int countRequestedAndCheckedOutByUser;
 
     public String execute() {
         try {
@@ -34,6 +35,8 @@ public class Book extends ActionSupport implements SessionAware {
 
             int userId = (int) userSession.get("id");
             submittedPendingRequest = DBService.hasPendingCheckoutRequestForBook(userId, bookEntryBean.getDbId());
+            countRequestedAndCheckedOutByUser = DBService.countRequestedAndCheckedOutByUser(userId);
+
             return SUCCESS;
         } catch (SQLException | ClassNotFoundException e) {
             error = e.toString();
@@ -57,8 +60,6 @@ public class Book extends ActionSupport implements SessionAware {
             return ERROR;
         }
     }
-
-
 
     public BookEntry getBookEntryBean() {
         return bookEntryBean;
@@ -101,10 +102,17 @@ public class Book extends ActionSupport implements SessionAware {
         this.submittedPendingRequest = submittedPendingRequest;
     }
 
+    public int getCountRequestedAndCheckedOutByUser() {
+        return countRequestedAndCheckedOutByUser;
+    }
+
+    public void setCountRequestedAndCheckedOutByUser(int countRequestedAndCheckedOutByUser) {
+        this.countRequestedAndCheckedOutByUser = countRequestedAndCheckedOutByUser;
+    }
+
     @Override
     public void setSession(Map<String, Object> session) {
         userSession = session;
         
     }
-    
 }

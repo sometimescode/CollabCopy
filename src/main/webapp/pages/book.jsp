@@ -111,7 +111,7 @@
                 </div>
                 <div class="row">
                   <div class="col-12">
-                    <hr>
+                    <hr class="mb-0">
                   </div>
                 </div>
                 <div class="row">
@@ -123,10 +123,19 @@
                         </div>
                       </s:if>
                       <s:else>
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                          Request Checkout
-                        </button>
+                        <s:if test="countRequestedAndCheckedOutByUser >= interceptorRules.getMaxBorrowLimit()">
+                          <div class="card-footer text-muted">
+                            You can only request for checkout and/or checkout a maximum of <s:property value="interceptorRules.getMaxBorrowLimit()"></s:property> books at a time. </br>
+                            You currently have <s:property value="countRequestedAndCheckedOutByUser"/> books requested for checkout and/or checked out. </br>
+                            Check <a href="<s:url action='profile' namespace='/user'/>">Profile</a> for status.
+                          </div>
+                        </s:if>
+                        <s:else>
+                          <!-- Button trigger modal -->
+                          <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            Request Checkout
+                          </button>
+                        </s:else>
                       </s:else>
                     </s:if>
                   </div>

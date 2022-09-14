@@ -11,13 +11,25 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Action Checkout Request</title>
+    <title>Edit Rule</title>
     
   </head>
   <body>
-    Create Checkout Record for Checkout Request ID <span class="fw-bold"><s:property value="checkoutRequestId"/></span>
+    <!-- Create Checkout Record for Checkout Request ID <span class="fw-bold"><s:property value="checkoutRequestId"/></span>
 
-    <hr>
+    <hr> -->
+    <div class="modal-header">
+      <h5 class="modal-title" id="staticBackdropLabel"><s:property value="dbId"></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+
+
+      
+    </div>
+
+    <!-- <p>Requester id: <s:property value="requesterId" /></p>
+    <p>checkout request id: <s:property value="checkoutRequestId" /></p>
     <s:if test="bookCopySelectList.size() == 0">
       <s:form action="rejectCheckoutRequest">
         There are currently no more available copies.
@@ -30,7 +42,7 @@
     <s:else>
       <s:form action="approveCheckoutRequest">
         <div class="form-floating mb-3">
-          <s:select cssClass="form-control form-select" id="floatingBookCopyId" name="checkoutRequestBean.requestedCopyId" placeholder="Requested Copy Id" list="bookCopySelectList" listKey="dbId" listValue="serialId"/>
+          <s:select cssClass="form-control form-select" id="floatingBookCopyId" name="checkoutRequestBean.requestedCopyId" placeholder="Requested Copy Id" list="bookCopySelectList"/>
           <label for="floatingBookCopyId">Select Book Copy to Reserve</label>
           <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="checkoutRequestBean.requestedCopyId" />
         </div>
@@ -39,7 +51,7 @@
         <s:textfield name="checkoutRequestBean.joinBookEntryTitle" hidden="true"/>
         <s:submit cssClass="btn btn-primary w-100" value="Approve"/>
       </s:form>
-    </s:else>
+    </s:else> -->
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -1,6 +1,7 @@
 <!doctype html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -57,17 +58,36 @@
             <div class="col-sm-12 col-md-8">
               <div class="p-4">
                 <s:form action="addBookCopy">
-                  <s:textfield name="bookEntryBean.cover" hidden="true"/>
-                  <s:textfield name="bookEntryBean.ISBN" hidden="true"/>
-                  <div class="form-floating mb-3">
-                    <s:textfield cssClass="form-control" id="floatingSerialId" name="bookCopyBean.serialId" placeholder="Serial Id"/>
-                    <label for="floatingSerialId">Serial Id</label>
-                    <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookCopyBean.serialId" />
+                  <div class="card-header">
+                    Serial Id (ISBN-ID)
                   </div>
+                  <div class="input-group mb-3">
+                    <div class="form-floating flex-grow-1">
+                        <s:textfield cssClass="form-control" id="floatingSerialIdHead" name="bookEntryBean.ISBN" placeholder="ISBN" readonly="true"/>
+                        <label for="floatingSerialIdHead">ISBN</label>
+                    </div>
+                    <span class="input-group-text">-</span>
+                    <div class="form-floating flex-grow-1">
+                      <s:textfield type="number" cssClass="form-control" id="floatingSerialIdCount" name="bookCopyLatestSerialCount" placeholder="COUNT" readonly="true"/>
+                      <label for="floatingSerialIdCount">ID</label>
+                  </div>
+                  </div>
+                  <s:hidden name="bookEntryBean.cover"/>
                   <div class="form-floating mb-3">
                     <s:textfield cssClass="form-control" id="floatingPurchasePrice" name="bookCopyBean.purchasePrice" placeholder="Purchase Price"/>
                     <label for="floatingPurchasePrice">Purchase Price</label>
                     <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookCopyBean.purchasePrice" />
+                  </div>
+                  <div class="form-floating mb-3">
+                    <div class="form-check form-switch">
+                      <s:checkbox cssClass="form-check-input" id="flexSwitchCheckDefault" name="toggleAutoGenerateCopies"/>
+                      <label class="form-check-label" for="flexSwitchCheckDefault">Generate Multiple Book Copies</label>
+                    </div>
+                  </div>
+                  <div id="generateCopiesDiv" class="form-floating mb-3" style="display:none;">
+                    <s:textfield cssClass="form-control" id="floatingCopiesCount" name="copiesToGenerate" placeholder="Copies to Generate"/>
+                    <label for="floatingCopiesCount">No. of Copies To Generate</label>
+                    <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="copiesToGenerate" />
                   </div>
                   <s:if test="!validationString.isEmpty()">
                     <p class="text-danger"><i class="bi bi-info-square-fill"></i> <s:property escapeHtml="false" value="validationString"/><p>
@@ -86,5 +106,22 @@
     
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        if($("#flexSwitchCheckDefault").is(":checked")) {
+              $("#generateCopiesDiv").show(300);
+          } else {
+              $("#generateCopiesDiv").hide(300);
+          }
+
+        $("#flexSwitchCheckDefault").click(function() {
+          if($(this).is(":checked")) {
+              $("#generateCopiesDiv").show(300);
+          } else {
+              $("#generateCopiesDiv").hide(300);
+          }
+        });
+      });
+    </script>
   </body>
 </html>

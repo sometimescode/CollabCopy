@@ -27,6 +27,9 @@
               <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="<s:url action='manageCheckoutRecords' namespace='/admin'/>">Records</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="<s:url action='manageRules' namespace='/admin'/>">Rules</a>
+              </li>
             </ul>
             <s:form cssClass="d-flex" action="searchBookFromDB" namespace="/admin">
               <s:textfield name="queryTitle" cssClass="form-control me-2" type="search" placeholder="Search Book" aria-label="Search Book"/>
