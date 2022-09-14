@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.plaf.synth.SynthTextFieldUI;
 
 import project.app.model.Account;
 import project.app.model.BookCopy;
@@ -27,6 +28,7 @@ import project.app.model.BookEntry;
 import project.app.model.CheckoutRecord;
 import project.app.model.CheckoutRecordInnerJoinBookEntryLeftJoinAccount;
 import project.app.model.OnlineCheckoutRequestInnerJoinBookEntryLeftJoinAccount;
+import project.app.model.ShelfWithBookEntries;
 import project.app.model.User;
 import project.app.model.UserSession;
 
@@ -215,7 +217,7 @@ public class DBService {
             connection = connectToDB();
 
 
-            String sql = "SELECT id, ISBN, title, authors, page_count, publisher, published_date, genre \n" +
+            String sql = "SELECT id, ISBN, title, authors, page_count, publisher, published_date, genre, shelf_id \n" +
                 "FROM book_entries\n" +
                 "ORDER BY id DESC";
 
@@ -232,6 +234,7 @@ public class DBService {
                 bookEntry.setPublisher(rs.getString(6));
                 bookEntry.setPublishedDate(rs.getDate(7));
                 bookEntry.setGenre(rs.getString(8));
+                bookEntry.setShelfId(rs.getInt(9));
 
                 bookEntries.add(bookEntry);
             }
@@ -267,8 +270,8 @@ public class DBService {
 
             byte[] data = baos.toByteArray();
 
-            String sql = "INSERT INTO book_entries(title, authors, cover, isbn, page_count, publisher, published_date, genre)\n" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO book_entries(title, authors, cover, isbn, page_count, publisher, published_date, genre, shelf_id)\n" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, bookEntry.getTitle());                    
@@ -279,6 +282,7 @@ public class DBService {
             preparedStatement.setString(6, bookEntry.getPublisher());
             preparedStatement.setDate(7, new java.sql.Date(bookEntry.getPublishedDate().getTime()));
             preparedStatement.setString(8, bookEntry.getGenre());
+            preparedStatement.setInt(9, bookEntry.getShelfId());
             preparedStatement.executeUpdate();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -1456,5 +1460,141 @@ public class DBService {
             if (baos != null) try { baos.close(); } catch (IOException ignore) {}
          }
     }
+
+    //shelf
+
+    public static List<ShelfWithBookEntries> getShelves() throws ClassNotFoundException, SQLException {
+
+        String sql = "SELECT * FROM shelves";
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = null;
+        List<ShelfWithBookEntries> shelves = new ArrayList<>();
+
+        try {
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ShelfWithBookEntries shelf = new ShelfWithBookEntries();
+                shelf.setId(rs.getInt("id"));
+                shelf.setShelf_name(rs.getString("shelf_name"));
+                shelves.add(shelf);
+            }
+            return shelves;
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException ignore) {};
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static List<ShelfWithBookEntries> getShelvesEntries() throws ClassNotFoundException, SQLException {
+
+        String sqlSelect = "SELECT shelves.*, SUM(IF(shelves.id = book_entries.shelf_id, 1, 0)) AS 'entries' ";
+        String sqlFrom = "FROM shelves LEFT JOIN book_entries ON shelves.id = book_entries.shelf_id GROUP BY shelves.id";
+        String sql = sqlSelect + sqlFrom;
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = null;
+        List<ShelfWithBookEntries> shelves = new ArrayList<>();
+
+        try {
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ShelfWithBookEntries shelf = new ShelfWithBookEntries();
+                shelf.setId(rs.getInt("id"));
+                shelf.setShelf_name(rs.getString("shelf_name"));
+                shelf.setEntries_count(rs.getInt("entries"));
+                shelves.add(shelf);
+            }
+            return shelves;
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException ignore) {}
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static int addShelf(String shelfName) throws ClassNotFoundException, SQLException {
+        String sql = "INSERT INTO shelves(shelf_name) VALUES(?)";
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        try {
+            ps.setString(1, shelfName);
+            return ps.executeUpdate();
+        }   finally {
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static List<BookEntry> getShelfById(int shelfId) throws ClassNotFoundException, SQLException {
+        String sql = "SELECT id, ISBN, title, authors, page_count, publisher, published_date, genre, shelf_id \n" +
+                "FROM book_entries\n" +
+                "WHERE shelf_id = ?";
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = null;
+        List<BookEntry> bookEntries = new ArrayList<>();
+
+        try {
+            ps.setInt(1, shelfId);
+            rs = ps.executeQuery();
+            while(rs.next()){  
+                BookEntry bookEntry = new BookEntry();
+                bookEntry.setDbId(rs.getInt(1));
+                bookEntry.setISBN(rs.getString(2));
+                bookEntry.setTitle(rs.getString(3));
+                bookEntry.setAuthors(rs.getString(4));
+                bookEntry.setPageCount(rs.getInt(5));
+                bookEntry.setPublisher(rs.getString(6));
+                bookEntry.setPublishedDate(rs.getDate(7));
+                bookEntry.setGenre(rs.getString(8));
+                bookEntry.setShelfId(rs.getInt(9));
+
+                bookEntries.add(bookEntry);
+            }
+            return bookEntries;
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException ignore) {}
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static List<Integer> getShelvesInList() throws ClassNotFoundException, SQLException {
+        String sql = "SELECT * FROM shelves";
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = null;
+        List<Integer> shelves = new ArrayList<>();
+
+        try {
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                shelves.add(rs.getInt("id"));
+            }
+            return shelves;
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException ignore) {}
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {}
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
+
+    public static void changeShelf(int shelfId, int bookEntryId) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE book_entries SET shelf_id = ? WHERE id = ?";
+        Connection connection = connectToDB();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        try {
+            ps.setInt(1, shelfId);
+            ps.setInt(2, bookEntryId);
+            ps.executeUpdate();
+        } finally {
+            if (ps != null) try { ps.close(); } catch (SQLException ignore) {} 
+            if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+        }
+    }
     //test zone
+
+    
 }

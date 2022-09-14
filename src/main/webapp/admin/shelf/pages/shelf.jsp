@@ -28,55 +28,43 @@
     </style>
   </head>
   <body class="admin">
-    <s:include value="adminMenu.jsp" />
+    <s:include value="../../pages/adminMenu.jsp" />
 
     <div class="container">
       <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
 
           <div class="d-flex flex-row-reverse">
-            <div class="p-2 bd-highlight"><a class="btn btn-primary" href="<s:url action='addBookRedirect' namespace='/admin'/>">Add Book</a></div>
+            <div class="p-2 bd-highlight"><a class="btn btn-primary" href="<s:url action='addShelf' namespace='/admin/shelf'/>">Add Shelf</a></div>
           </div>
           
           <hr>
 
-          <h1>Books</h1>
+          <h1>Shelves</h1>
           <div class="table-responsive">
-            <table id="allBooks" class="display" style="width:100%">
+            <table id="allShelves" class="display" style="width:100%">
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>ISBN</th>
-                  <th>Title</th>
-                  <th>Author(s)</th>
-                  <th>Publisher</th>
-                  <th>Published Date</th>
-                  <th>Page Count</th>
-                  <th>Genre</th>
-                  <th>Shelf</th>
+                  <th>Name</th>
+                  <th>No. of Entries</th>
                 </tr>
               </thead>
               <tbody>
-                <s:iterator value="allBookEntries" status="allBookEntriesStatus">
-                  <s:url action="getBookEntryByISBN" namespace="/admin/book" var="urlTag" >
-                      <s:param name="ISBN"><s:property value="ISBN"/></s:param>
+                <s:iterator value="shelves" status="allShelvesStatus">
+                  <s:url action="getShelfById" namespace="/admin/shelf" var="urlTag" >
+                      <s:param name="shelfId"><s:property value="id"/></s:param>
+                      <s:param name="shelfName"><s:property value="shelf_name"/></s:param>
                   </s:url>
                   <tr>
-                    <td><s:property value="dbId"/></td>
-                    <td><s:property value="ISBN"/></td>
-                    <td><s:a href="%{urlTag}"><s:property value="title"/></s:a></td>
-                    <td><s:property value="authors"/></td>
-                    <td><s:property value="publisher"/></td>
-                    <td><s:property value="publishedDate"/></td>
-                    <td><s:property value="pageCount"/></td>
-                    <td><s:property value="genre"/></td>
-                    <td><s:property value="shelfId"/></td>
+                    <td><s:a href="%{urlTag}"><s:property value="id"/></s:a></td>
+                    <td><s:property value="shelf_name"/></td>
+                    <td><s:property value="entries_count"/></td>
                   </tr>
                 </s:iterator>
               </tbody>
             </table>
           </div>
-
         </div>
       </div>
     </div>
@@ -100,7 +88,7 @@
       $(document).ready(function () {
         $.fn.dataTable.moment( 'M/D/YY' );
 
-        $('#allBooks').DataTable({
+        $('#allShelves').DataTable({
           order: [[0, 'desc']]
         });
       })

@@ -28,19 +28,20 @@
     </style>
   </head>
   <body class="admin">
-    <s:include value="adminMenu.jsp" />
+    <s:include value="../../pages/adminMenu.jsp" />
 
     <div class="container">
       <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
 
           <div class="d-flex flex-row-reverse">
-            <div class="p-2 bd-highlight"><a class="btn btn-primary" href="<s:url action='addBookRedirect' namespace='/admin'/>">Add Book</a></div>
+            <div class="p-2 bd-highlight"><a class="btn btn-danger" href="<s:url action='deleteShelf' namespace='/admin/shelf'/>">Delete Shelf</a></div>
+            <div class="p-2 bd-highlight"><a class="btn btn-primary" href="<s:url action='renameShelf' namespace='/admin/shelf'/>">Edit Shelf</a></div>
           </div>
           
           <hr>
 
-          <h1>Books</h1>
+          <h1>Books From <s:property value="shelfName" /></h1>
           <div class="table-responsive">
             <table id="allBooks" class="display" style="width:100%">
               <thead>
@@ -53,34 +54,38 @@
                   <th>Published Date</th>
                   <th>Page Count</th>
                   <th>Genre</th>
-                  <th>Shelf</th>
-                </tr>
+                  <th>Shelf ID: <s:property value="shelfId"/></th>
+                </tr>   
               </thead>
               <tbody>
-                <s:iterator value="allBookEntries" status="allBookEntriesStatus">
-                  <s:url action="getBookEntryByISBN" namespace="/admin/book" var="urlTag" >
-                      <s:param name="ISBN"><s:property value="ISBN"/></s:param>
-                  </s:url>
+                <s:iterator value="bookEntries" status="allBookEntriesStatus">
+                    <s:url action="changeShelf" namespace="/admin/shelf" var="urlChangeShelf">
+                        <s:param name="dbId"><s:property value="dbId"/></s:param>
+                        <s:param name="shelfId"><s:property value="shelfId"/></s:param>
+                        <s:param name="title"><s:property value="title"/></s:param>
+                    </s:url>
                   <tr>
                     <td><s:property value="dbId"/></td>
                     <td><s:property value="ISBN"/></td>
-                    <td><s:a href="%{urlTag}"><s:property value="title"/></s:a></td>
+                    <td><s:property value="title"/></td>
                     <td><s:property value="authors"/></td>
                     <td><s:property value="publisher"/></td>
                     <td><s:property value="publishedDate"/></td>
                     <td><s:property value="pageCount"/></td>
-                    <td><s:property value="genre"/></td>
-                    <td><s:property value="shelfId"/></td>
+                    <td><s:property value="genre"/></td>                 
+                    <td><s:a class="btn btn-primary" href="%{urlChangeShelf}">Change Shelf</s:a></td>
                   </tr>
                 </s:iterator>
               </tbody>
             </table>
           </div>
 
-        </div>
       </div>
     </div>
-    
+          
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+      
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     
