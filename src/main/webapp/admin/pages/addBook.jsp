@@ -207,6 +207,11 @@
                     <label for="floatingGenre">Genre</label>
                     <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookEntryBean.genre" />
                   </div>
+                  <div class="form-floating mb-3">
+                    <s:select cssClass="form-control form-select" id="floatingShelf" name="bookEntryBean.shelfId" placeholder="Shelf" emptyOption="true" list="shelfList"/>
+                    <label for="floatingShelf">Shelf ID</label>
+                    <s:fielderror cssClass="text-danger col-form-label-sm" fieldName="bookEntryBean.shelfId" />
+                  </div>
                   <s:hidden name="bookEntryBean.cover"/>
                   <s:if test="!validationString.isEmpty()">
                     <p class="text-danger"><i class="bi bi-info-square-fill"></i> <s:property escapeHtml="false" value="validationString"/><p>

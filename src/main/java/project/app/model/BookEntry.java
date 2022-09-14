@@ -12,6 +12,7 @@ public class BookEntry {
     private String publisher;
     private Date publishedDate;
     private String genre;
+    private int shelfId;
     public int getDbId() {
         return dbId;
     }
@@ -65,6 +66,12 @@ public class BookEntry {
     }
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+    public int getShelfId() {
+        return shelfId;
+    }
+    public void setShelfId(int shelfId) {
+        this.shelfId = shelfId;
     }
     @Override
     public String toString() {

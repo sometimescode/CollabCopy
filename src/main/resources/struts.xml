@@ -366,6 +366,42 @@
         </action>
     </package>
 
+    <package name="adminShelf" namespace="/admin/shelf" extends="securePackage">
+        <action name="manageShelf" class="project.app.action.AdminManageShelf" method="execute">
+            <result name="success">pages/shelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+        <action name="addShelf" class="project.app.action.AdminManageShelf" method="addShelf">
+            <result name="success">pages/addShelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+        <action name="addShelfToDb" class="project.app.action.AdminManageShelf" method="addShelfToDb">
+            <result name="success" type="redirectAction">
+                <param name="actionName">manageShelf</param>
+                <param name="namespace">/admin/shelf</param>
+            </result>
+            <result name="input">pages/addShelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+        <action name="getShelfById" class="project.app.action.AdminManageShelf" method="getShelfById">
+            <result name="success">pages/selectShelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+        <action name="changeShelf" class="project.app.action.AdminManageShelf" method="changeShelf">
+            <result name="success">pages/changeShelf.jsp</result>
+            <result name="input">pages/changeShelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+        <action name="changeShelfSelect" class="project.app.action.AdminManageShelf" method="changeShelfSelect">
+            <result name="success" type="redirectAction">
+                <param name="actionName">manageShelf</param>
+                <param name="namespace">/admin/shelf</param>
+            </result>
+            <result name="input">pages/changeShelf.jsp</result>
+            <result name="error">../../pages/error.jsp</result>
+        </action>
+    </package>
+
     <package name="adminRule" namespace="/admin/rule" extends="securePackage">
         <action name="ruleForm" class="project.app.action.AdminRule" method="ruleForm">
 			<result name="success">pages/rule.jsp</result>

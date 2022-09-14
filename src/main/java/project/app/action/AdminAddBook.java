@@ -35,6 +35,7 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     private List<String> authorList = new ArrayList<String>();
     private List<String> genreList = Arrays.asList(new String[] {"Fiction", "Non-Fiction"});
+    private List<Integer> shelfList;
 
     private File file;
     private String contentType;
@@ -257,6 +258,15 @@ public class AdminAddBook extends ActionSupport implements SessionAware {
 
     public void setFileValidationString(String fileValidationString) {
         this.fileValidationString = fileValidationString;
+    }
+    
+
+    public List<Integer> getShelfList() throws ClassNotFoundException, SQLException {
+        return DBService.getShelvesInList();
+    }
+
+    public void setShelfList(List<Integer> shelfList) {
+        this.shelfList = shelfList;
     }
 
     @Override

@@ -19,6 +19,9 @@
                 <a class="nav-link" aria-current="page" href="<s:url action='manageBooks' namespace='/admin'/>">Books</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="<s:url action='manageShelf' namespace='/admin/shelf'/>">Shelf</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="<s:url action='manageCheckoutRequests' namespace='/admin'/>">Requests</a>
               </li>
               <li class="nav-item">

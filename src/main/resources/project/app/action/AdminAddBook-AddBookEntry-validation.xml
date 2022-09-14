@@ -61,4 +61,9 @@
     <param name="fieldName">bookEntryBean.genre</param>
     <message>Genre is required.</message>
   </validator>   
+  <field name="bookEntryBean.shelfId">
+    <field-validator type="required">
+        <message>Shelf ID is required.</message>
+    </field-validator>
+</field>
 </validators>

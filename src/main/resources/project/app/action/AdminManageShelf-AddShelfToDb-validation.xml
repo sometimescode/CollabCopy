@@ -1,0 +1,10 @@
+<!DOCTYPE validators PUBLIC "-//Apache Struts//XWork Validator 1.0.3//EN"
+    "http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+  <validator type="stringlength">
+    <param name="fieldName">shelfName</param>
+    <param name="minLength">4</param>
+    <param name="trim">true</param>
+    <message>Shelf Name shoud be at leat 4 characters long.</message>
+  </validator>
+</validators>
